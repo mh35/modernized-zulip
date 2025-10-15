@@ -2,8 +2,15 @@
   "name": "modernized-zulip",
   "version": "0.0.1",
   "description": "Modernized Zulip JavaScript/TypeScript binding",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json"
   },
   "repository": {
     "type": "git",
