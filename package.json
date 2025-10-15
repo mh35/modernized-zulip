@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/mh35/modernized-zulip/issues"
   },
-  "homepage": "https://github.com/mh35/modernized-zulip#readme"
+  "homepage": "https://github.com/mh35/modernized-zulip#readme",
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
 }
