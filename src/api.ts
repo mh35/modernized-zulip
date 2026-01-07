@@ -1,6 +1,18 @@
 import {AuthByApiKeyInterface} from './auth'
 
-export async function callApi<T>(
+export interface CommonSuccessResponse {
+    msg: string
+    result: 'success'
+    ignored_parameters_unsupported?: string[]
+}
+
+export interface CommonErrorResponse {
+    msg: string
+    result: 'error'
+    code?: string
+}
+
+export async function callApi<T extends CommonSuccessResponse>(
     authConfig: AuthByApiKeyInterface,
     endpoint: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -30,7 +42,14 @@ export async function callApi<T>(
             },
         })
         if (response.status >= 300) {
-            throw new Error('Call API failed.')
+            try {
+                const errorData = await response.json() as CommonErrorResponse
+                throw new Error('Call API failed.', {
+                    cause: errorData,
+                })
+            } catch {
+                throw new Error('Call API failed.')
+            }
         }
         const data = await response.json() as T
         return data
@@ -61,7 +80,14 @@ export async function callApi<T>(
                 },
             })
             if (response.status >= 300) {
-                throw new Error('Call API failed.')
+                try {
+                    const errorData = await response.json() as CommonErrorResponse
+                    throw new Error('Call API failed.', {
+                        cause: errorData,
+                    })
+                } catch {
+                    throw new Error('Call API failed.')
+                }
             }
             const data = await response.json() as T
             return data
@@ -75,7 +101,14 @@ export async function callApi<T>(
                 },
             })
             if (response.status >= 300) {
-                throw new Error('Call API failed.')
+                try {
+                    const errorData = await response.json() as CommonErrorResponse
+                    throw new Error('Call API failed.', {
+                        cause: errorData,
+                    })
+                } catch {
+                    throw new Error('Call API failed.')
+                }
             }
             const data = await response.json() as T
             return data
@@ -88,7 +121,14 @@ export async function callApi<T>(
                 body: searchParams,
             })
             if (response.status >= 300) {
-                throw new Error('Call API failed.')
+                try {
+                    const errorData = await response.json() as CommonErrorResponse
+                    throw new Error('Call API failed.', {
+                        cause: errorData,
+                    })
+                } catch {
+                    throw new Error('Call API failed.')
+                }
             }
             const data = await response.json() as T
             return data
