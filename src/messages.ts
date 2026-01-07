@@ -743,6 +743,28 @@ export interface GetMessagesResponse extends CommonSuccessResponse {
 }
 
 /**
+ * Add an emoji reaction API parameters
+ */
+export type AddEmojiReactionsParams = {
+    /**
+     * Message ID
+     */
+    message_id: number
+    /**
+     * Emoji name
+     */
+    emoji_name: string
+    /**
+     * Emoji code
+     */
+    emoji_code?: string
+    /**
+     * Reaction type
+     */
+    reaction_type?: 'unicode_emoji' | 'realm_emoji' | 'zulip_extra_emoji'
+}
+
+/**
  * Send a message.
  * @param authConfig Auth config
  * @param params Send a message parameters
@@ -829,6 +851,26 @@ export async function getMessages(authConfig: AuthByApiKeyInterface, params: Get
         authConfig,
         '/api/v1/messages',
         'GET',
+        data
+    )
+    return resp
+}
+
+/**
+ * Add an emoji reactions to a message
+ * @param authConfig Auth config
+ * @param params Add an emoji reaction parameters
+ * @returns The result of add an emoji reaction
+ * @see https://zulip.com/api/add-reaction
+ */
+export async function addAnEmojiReaction(authConfig: AuthByApiKeyInterface, params: AddEmojiReactionsParams) {
+    const endpointUrl = `/api/v1/messages/${params.message_id}/reactions`
+    const data = {...params} as { [key: string]: string | number | string[] | number[] | boolean }
+    delete data.message_id
+    const resp = await callApi<CommonSuccessResponse>(
+        authConfig,
+        endpointUrl,
+        'POST',
         data
     )
     return resp
