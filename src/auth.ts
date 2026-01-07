@@ -98,4 +98,3 @@ export async function authenticate(authInfo: AuthInterface) {
         throw new Error('Unsupported authentication method.')
     }
 }
-
