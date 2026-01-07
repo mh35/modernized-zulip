@@ -545,6 +545,7 @@ export interface TopicLinkItem {
 
 /**
  * Message flags
+ * @see https://zulip.com/api/update-message-flags#available-flags
  */
 export type MessageFlagValues = 'read' | 'starred' | 'collapsed' | 'mentioned' |
     'stream_wildcard_mentioned' | 'topic_wildcard_mentioned' | 'has_alert_word' |
