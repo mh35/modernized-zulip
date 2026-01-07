@@ -1,22 +1,52 @@
 import {AuthByApiKeyInterface} from './auth'
 
+/**
+ * Common success response
+ * @see https://zulip.com/api/rest-error-handling
+ */
 export interface CommonSuccessResponse {
+    /**
+     * Human-readable error message
+     */
     msg: string
+    /**
+     * Result code
+     */
     result: 'success'
+    /**
+     * Ignored parameter names which the server does not support
+     */
     ignored_parameters_unsupported?: string[]
 }
 
 export interface CommonErrorResponse {
+    /**
+     * Human-readable error message
+     */
     msg: string
+    /**
+     * Result code
+     */
     result: 'error'
+    /**
+     * Error code
+     */
     code?: string
 }
 
+/**
+ * Call API general function
+ * @param authConfig Auth config
+ * @param endpoint Endpoint URL based on server root
+ * @param method API method
+ * @param params API parameters
+ * @returns API response
+ */
 export async function callApi<T extends CommonSuccessResponse>(
     authConfig: AuthByApiKeyInterface,
     endpoint: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-    params: { [key: string]: string | number | string[] | number[] | File } = {}
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+    params: { [key: string]: string | number | string[] | number[] | boolean | File } = {}
 ) {
     const endpointUrl = authConfig.rootUrl + endpoint
     if (Object.values(params).some((value) => value instanceof File)) {
@@ -30,6 +60,8 @@ export async function callApi<T extends CommonSuccessResponse>(
                 formData.append(key, value)
             } else if (typeof value === 'number') {
                 formData.append(key, value.toString())
+            } else if (typeof value === 'boolean') {
+                formData.append(key, value ? 'true' : 'false')
             } else {
                 formData.append(key, value)
             }
@@ -68,6 +100,8 @@ export async function callApi<T extends CommonSuccessResponse>(
                 dataParams[key] = JSON.stringify(value)
             } else if (typeof value === 'number') {
                 dataParams[key] = value.toString()
+            } else if (typeof value === 'boolean') {
+                dataParams[key] = value ? 'true' : 'false'
             } else {
                 dataParams[key] = value
             }
