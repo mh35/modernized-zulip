@@ -209,7 +209,8 @@ export type EditMessageNotOnlyMessageParams = EditMessageBaseParams & (
 /**
  * Edit a message parameters
  */
-export type EditMessageParams = EditMessageOnlyMessageParams | EditMessageNotOnlyMessageParams
+export type EditMessageParams = EditMessageOnlyMessageParams |
+    EditMessageNotOnlyMessageParams
 
 /**
  * Message item in deteched uploads in response of edit a message API.
@@ -238,7 +239,8 @@ export interface EditMessageDetachedUploadItem {
      */
     name: string
     /**
-     * A representation of the path of the file within the repository of user-uploaded files.
+     * A representation of the path of the file within the repository of
+     * user-uploaded files.
      */
     path_id: string
     /**
@@ -348,8 +350,8 @@ export type NarrowItemObjNonSpecificated = NarrowItemObjBase & {
      */
     operator: Exclude<
         string,
-        'channel' | 'stream' | 'id' | 'sender' | 'group-pm-with' | 'dm-including' | 'mentions' |
-        'with' | 'pm-with' | 'dm' | 'search'
+        'channel' | 'stream' | 'id' | 'sender' | 'group-pm-with' | 'dm-including' |
+        'mentions' | 'with' | 'pm-with' | 'dm' | 'search'
     >
     /**
      * Narrow operand
@@ -788,6 +790,26 @@ export type RemoveEmojiReactionsParams = {
 }
 
 /**
+ * Render a message API parameters
+ */
+export type RenderMessageParams = {
+    /**
+     * Message content
+     */
+    content: string
+}
+
+/**
+ * Render a message API response
+ */
+export interface RenderMessageResponse extends CommonSuccessResponse {
+    /**
+     * Rendered HTML
+     */
+    rendered: string
+}
+
+/**
  * Send a message.
  * @param authConfig Auth config
  * @param params Send a message parameters
@@ -900,7 +922,9 @@ export async function getMessages(
  * @returns The result of add an emoji reaction
  * @see https://zulip.com/api/add-reaction
  */
-export async function addAnEmojiReaction(authConfig: AuthByApiKeyInterface, params: AddEmojiReactionsParams) {
+export async function addAnEmojiReaction(
+    authConfig: AuthByApiKeyInterface, params: AddEmojiReactionsParams
+) {
     const endpointUrl = `/api/v1/messages/${params.message_id}/reactions`
     const data = {...params} as {
         [key: string]: string | number | string[] | number[] | boolean
@@ -922,7 +946,9 @@ export async function addAnEmojiReaction(authConfig: AuthByApiKeyInterface, para
  * @returns The result of remove an emoji reaction
  * @see https://zulip.com/api/remove-reaction
  */
-export async function removeAnEmojiReaction(authConfig: AuthByApiKeyInterface, params: RemoveEmojiReactionsParams) {
+export async function removeAnEmojiReaction(
+    authConfig: AuthByApiKeyInterface, params: RemoveEmojiReactionsParams
+) {
     const endpointUrl = `/api/v1/messages/${params.message_id}/reactions`
     const data = {...params} as {
         [key: string]: string | number | string[] | number[] | boolean
@@ -933,6 +959,25 @@ export async function removeAnEmojiReaction(authConfig: AuthByApiKeyInterface, p
         endpointUrl,
         'DELETE',
         data
+    )
+    return resp
+}
+
+/**
+ * Render a message to HTML
+ * @param authConfig Auth config
+ * @param params Render a message parameters
+ * @returns The result of render a message to HTML
+ * @see https://zulip.com/api/render-message
+ */
+export async function renderAMessage(
+    authConfig: AuthByApiKeyInterface, params: RenderMessageParams
+) {
+    const resp = await callApi<RenderMessageResponse>(
+        authConfig,
+        '/api/v1/messages/render',
+        'POST',
+        params
     )
     return resp
 }
