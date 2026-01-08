@@ -1,22 +1,43 @@
 export interface AuthBaseInterface {
+    /**
+     * Zulip root URL. This does not end with /
+     */
     rootUrl: string
+    /**
+     * Zulip username or email address
+     */
     username: string
 }
 
 export interface AuthByPasswordInterface extends AuthBaseInterface {
+    /**
+     * Zulip password
+     */
     password: string
 }
 
 export interface AuthByApiKeyInterface extends AuthBaseInterface {
+    /**
+     * Zulip API key
+     */
     apiKey: string
 }
 
 export interface AuthDevInterface extends AuthBaseInterface {
+    /**
+     * Development flag
+     */
     development: true
 }
 
 export interface AuthByJwtTokenInterface {
+    /**
+     * Zulip root URL. This does not end with /
+     */
     rootUrl: string
+    /**
+     * JWT token to authenticate. This must contain email field.
+     */
     jwtToken: string
 }
 

@@ -766,13 +766,37 @@ export type AddEmojiReactionsParams = {
 }
 
 /**
+ * Remove an emoji reaction API parameters
+ */
+export type RemoveEmojiReactionsParams = {
+    /**
+     * Message ID
+     */
+    message_id: number
+    /**
+     * Emoji name
+     */
+    emoji_name?: string
+    /**
+     * Emoji code
+     */
+    emoji_code?: string
+    /**
+     * Reaction type
+     */
+    reaction_type?: 'unicode_emoji' | 'realm_emoji' | 'zulip_extra_emoji'
+}
+
+/**
  * Send a message.
  * @param authConfig Auth config
  * @param params Send a message parameters
  * @returns The result of sending a message.
  * @see https://zulip.com/api/send-message
  */
-export async function sendAMessage(authConfig: AuthByApiKeyInterface, params: SendMessageParams) {
+export async function sendAMessage(
+    authConfig: AuthByApiKeyInterface, params: SendMessageParams
+) {
     const resp = await callApi<SendMessageResponse>(
         authConfig,
         '/api/v1/messages',
@@ -789,7 +813,9 @@ export async function sendAMessage(authConfig: AuthByApiKeyInterface, params: Se
  * @returns The result of uploading a file.
  * @see https://zulip.com/api/upload-file
  */
-export async function uploadAFile(authConfig: AuthByApiKeyInterface, params: UploadFileParams) {
+export async function uploadAFile(
+    authConfig: AuthByApiKeyInterface, params: UploadFileParams
+) {
     const resp = await callApi<UploadFileResponse>(
         authConfig,
         '/api/v1/messages',
@@ -806,9 +832,13 @@ export async function uploadAFile(authConfig: AuthByApiKeyInterface, params: Upl
  * @returns The result of editing a message
  * @see https://zulip.com/api/update-message
  */
-export async function editAMessage(authConfig: AuthByApiKeyInterface, params: EditMessageParams) {
+export async function editAMessage(
+    authConfig: AuthByApiKeyInterface, params: EditMessageParams
+) {
     const endpointUrl = `/api/v1/messages/${params.message_id}`
-    const data = {...params} as { [key: string]: string | number | string[] | number[] | boolean}
+    const data = {...params} as {
+        [key: string]: string | number | string[] | number[] | boolean
+    }
     delete data.message_id
     const resp = await callApi<EditMessageResponse>(
         authConfig,
@@ -826,7 +856,9 @@ export async function editAMessage(authConfig: AuthByApiKeyInterface, params: Ed
  * @returns The result of deleting a message
  * @see https://zulip.com/api/delete-message
  */
-export async function deleteAMessage(authConfig: AuthByApiKeyInterface, params: DeleteMessageParams) {
+export async function deleteAMessage(
+    authConfig: AuthByApiKeyInterface, params: DeleteMessageParams
+) {
     const endpointUrl = `/api/v1/messages/${params.message_id}`
     const resp = await callApi<CommonSuccessResponse>(
         authConfig,
@@ -843,11 +875,15 @@ export async function deleteAMessage(authConfig: AuthByApiKeyInterface, params: 
  * @returns The result of get messages
  * @see https://zulip.com/api/get-messages
  */
-export async function getMessages(authConfig: AuthByApiKeyInterface, params: GetMessagesParams) {
+export async function getMessages(
+    authConfig: AuthByApiKeyInterface, params: GetMessagesParams
+) {
     const data = 'narrow' in params ? {
         ...params,
         narrow: JSON.stringify(params.narrow)
-    } : params as unknown as { [key: string]: string | number | string[] | number[] | boolean }
+    } : params as unknown as {
+        [key: string]: string | number | string[] | number[] | boolean
+    }
     const resp = await callApi<GetMessagesResponse>(
         authConfig,
         '/api/v1/messages',
@@ -866,12 +902,36 @@ export async function getMessages(authConfig: AuthByApiKeyInterface, params: Get
  */
 export async function addAnEmojiReaction(authConfig: AuthByApiKeyInterface, params: AddEmojiReactionsParams) {
     const endpointUrl = `/api/v1/messages/${params.message_id}/reactions`
-    const data = {...params} as { [key: string]: string | number | string[] | number[] | boolean }
+    const data = {...params} as {
+        [key: string]: string | number | string[] | number[] | boolean
+    }
     delete data.message_id
     const resp = await callApi<CommonSuccessResponse>(
         authConfig,
         endpointUrl,
         'POST',
+        data
+    )
+    return resp
+}
+
+/**
+ * Remove an emoji reaction from a message
+ * @param authConfig Auth config
+ * @param params Remove and emoji reactions parameters
+ * @returns The result of remove an emoji reaction
+ * @see https://zulip.com/api/remove-reaction
+ */
+export async function removeAnEmojiReaction(authConfig: AuthByApiKeyInterface, params: RemoveEmojiReactionsParams) {
+    const endpointUrl = `/api/v1/messages/${params.message_id}/reactions`
+    const data = {...params} as {
+        [key: string]: string | number | string[] | number[] | boolean
+    }
+    delete data.message_id
+    const resp = await callApi<CommonSuccessResponse>(
+        authConfig,
+        endpointUrl,
+        'DELETE',
         data
     )
     return resp
